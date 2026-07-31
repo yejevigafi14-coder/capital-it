@@ -11,57 +11,36 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --blue: #0057B7;
+            --yellow: #FFD700;
+            --dark: #0a0a0a;
+            --darker: #1a1a2e;
+            --light: #b0b0b0;
+            --white: #ffffff;
+            --gradient: linear-gradient(135deg, #0057B7, #FFD700);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-            color: #ffffff;
-            min-height: 100vh;
+            background: var(--dark);
+            color: var(--white);
             overflow-x: hidden;
         }
 
-        /* Анимированный фон с частицами */
-        .particles {
+        /* Canvas для параллакс-эффекта */
+        #bgCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            animation: float 15s infinite;
-        }
-
-        /* Украинские цвета для частиц */
-        .particle:nth-child(3n) {
-            background: rgba(0, 87, 183, 0.4); /* Синий */
-        }
-        .particle:nth-child(3n+1) {
-            background: rgba(255, 215, 0, 0.4); /* Желтый */
-        }
-        .particle:nth-child(3n+2) {
-            background: rgba(0, 212, 255, 0.3);
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(-100vh) scale(1);
-                opacity: 0;
-            }
+            pointer-events: none;
         }
 
         .container {
@@ -72,61 +51,141 @@
             padding: 0 20px;
         }
 
+        /* Прелоадер */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        #preloader.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 1.5s infinite;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 20px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .loader-bar-fill {
+            height: 100%;
+            background: var(--gradient);
+            animation: loading 1s ease-in-out;
+            width: 100%;
+        }
+
+        @keyframes loading {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
         /* Навигация */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 30px 0;
-            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+            padding: 20px 40px;
+            background: rgba(10,10,10,0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        nav.scrolled {
+            padding: 10px 40px;
+            background: rgba(10,10,10,0.95);
         }
 
         .logo {
-            font-size: 28px;
-            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: rotate3d 4s infinite linear;
+        }
+
+        @keyframes rotate3d {
+            0% { transform: perspective(100px) rotateY(0deg); }
+            100% { transform: perspective(100px) rotateY(360deg); }
         }
 
         .logo-text {
-            background: linear-gradient(45deg, #0057B7, #FFD700);
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: 2px;
-        }
-
-        .logo-flag {
-            font-size: 32px;
         }
 
         .nav-links {
             display: flex;
             gap: 30px;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
-            color: #b0b0b0;
+            color: var(--light);
             text-decoration: none;
-            font-size: 16px;
+            font-size: 15px;
             transition: all 0.3s;
             position: relative;
+            padding: 5px 0;
         }
 
         .nav-links a:hover {
-            color: #FFD700;
+            color: var(--yellow);
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: 0;
             left: 0;
             width: 0;
             height: 2px;
-            background: #FFD700;
+            background: var(--yellow);
             transition: width 0.3s;
         }
 
@@ -134,12 +193,55 @@
             width: 100%;
         }
 
+        .lang-switch {
+            display: flex;
+            gap: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 3px;
+        }
+
+        .lang-btn {
+            padding: 5px 12px;
+            border: none;
+            background: transparent;
+            color: var(--light);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--yellow);
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--white);
+            transition: all 0.3s;
+        }
+
         /* Hero секция */
         .hero {
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            min-height: 80vh;
-            padding: 60px 0;
+            padding: 100px 0 60px;
+            position: relative;
         }
 
         .hero-content {
@@ -154,58 +256,84 @@
         }
 
         .badge {
-            display: inline-block;
-            padding: 8px 20px;
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 25px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.3);
             border-radius: 50px;
-            color: #FFD700;
+            color: var(--yellow);
             font-size: 14px;
             margin-bottom: 30px;
-            animation: pulse 2s infinite;
+            animation: glow 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 0 15px rgba(255, 215, 0, 0);
-            }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.3); }
+            50% { box-shadow: 0 0 20px rgba(255,215,0,0.6); }
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         h1 {
-            font-size: 64px;
+            font-size: 72px;
             line-height: 1.1;
             margin-bottom: 20px;
             font-weight: 800;
         }
 
-        h1 .gradient-text {
-            background: linear-gradient(45deg, #0057B7, #FFD700);
+        .gradient-text {
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
+        .typing-text {
+            display: inline-block;
+            border-right: 3px solid var(--yellow);
+            padding-right: 5px;
+            animation: typing 3s steps(20) infinite, blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            0%, 100% { width: 0; }
+            50% { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--yellow); }
+        }
+
         .subtitle {
             font-size: 20px;
-            color: #b0b0b0;
+            color: var(--light);
             margin-bottom: 40px;
             max-width: 500px;
             line-height: 1.6;
         }
 
-        /* Украинский флаг-разделитель */
         .ua-flag-line {
-            width: 100px;
-            height: 3px;
+            width: 120px;
+            height: 4px;
             background: linear-gradient(90deg, #0057B7 50%, #FFD700 50%);
             margin: 20px 0;
             border-radius: 2px;
         }
 
-        /* Кнопки */
         .buttons {
             display: flex;
             gap: 20px;
@@ -213,134 +341,523 @@
         }
 
         .btn {
-            padding: 16px 35px;
+            padding: 18px 40px;
             border: none;
             border-radius: 50px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             position: relative;
             overflow: hidden;
-            text-decoration: none;
-            display: inline-block;
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, #0057B7, #FFD700);
-            color: white;
-            box-shadow: 0 5px 25px rgba(0, 87, 183, 0.3);
+            background: var(--gradient);
+            color: var(--white);
+            box-shadow: 0 10px 30px rgba(0,87,183,0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 15px 40px rgba(255,215,0,0.4);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
         }
 
         .btn-outline {
             background: transparent;
-            color: #ffffff;
-            border: 2px solid rgba(255, 215, 0, 0.3);
+            color: var(--white);
+            border: 2px solid rgba(255,215,0,0.3);
         }
 
         .btn-outline:hover {
-            border-color: #FFD700;
-            color: #FFD700;
+            border-color: var(--yellow);
+            color: var(--yellow);
             transform: translateY(-3px);
         }
 
-        /* 3D куб с украинской символикой */
-        .cube-container {
-            width: 300px;
-            height: 300px;
+        /* 3D сцена */
+        .scene {
+            width: 350px;
+            height: 350px;
             perspective: 1000px;
         }
 
-        .cube {
+        .orb {
             width: 100%;
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            animation: rotate 20s infinite linear;
+            animation: rotate3d 20s infinite linear;
         }
 
-        .face {
+        .ring {
             position: absolute;
+            border-radius: 50%;
+            border: 2px solid;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+        }
+
+        .ring:nth-child(1) {
             width: 300px;
             height: 300px;
-            border: 2px solid rgba(255, 215, 0, 0.4);
-            background: linear-gradient(135deg, rgba(0, 87, 183, 0.1), rgba(255, 215, 0, 0.1));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: -150px 0 0 -150px;
+            border-color: rgba(0,87,183,0.5);
+            animation: rotateRing1 10s infinite linear;
+        }
+
+        .ring:nth-child(2) {
+            width: 250px;
+            height: 250px;
+            margin: -125px 0 0 -125px;
+            border-color: rgba(255,215,0,0.5);
+            animation: rotateRing2 12s infinite linear reverse;
+        }
+
+        .ring:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            margin: -100px 0 0 -100px;
+            border-color: rgba(255,255,255,0.3);
+            animation: rotateRing1 8s infinite linear;
+        }
+
+        .ring:nth-child(4) {
+            width: 150px;
+            height: 150px;
+            margin: -75px 0 0 -75px;
+            border-color: rgba(0,87,183,0.7);
+            animation: rotateRing2 6s infinite linear reverse;
+        }
+
+        .center-sphere {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            margin: -40px 0 0 -40px;
+            background: var(--gradient);
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255,215,0,0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes rotateRing1 {
+            from { transform: rotateX(60deg) rotateY(0deg) rotateZ(0deg); }
+            to { transform: rotateX(60deg) rotateY(360deg) rotateZ(0deg); }
+        }
+
+        @keyframes rotateRing2 {
+            from { transform: rotateX(-30deg) rotateY(0deg) rotateZ(45deg); }
+            to { transform: rotateX(-30deg) rotateY(360deg) rotateZ(45deg); }
+        }
+
+        /* Секция услуг */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
             font-size: 48px;
-            backdrop-filter: blur(5px);
+            margin-bottom: 20px;
         }
 
-        .front {
-            transform: translateZ(150px);
-            background: linear-gradient(135deg, #0057B7, #1a3a6e);
-        }
-        .back {
-            transform: rotateY(180deg) translateZ(150px);
-            background: linear-gradient(135deg, #FFD700, #b8960f);
-        }
-        .right {
-            transform: rotateY(90deg) translateZ(150px);
-        }
-        .left {
-            transform: rotateY(-90deg) translateZ(150px);
-        }
-        .top {
-            transform: rotateX(90deg) translateZ(150px);
-            background: rgba(0, 87, 183, 0.3);
-        }
-        .bottom {
-            transform: rotateX(-90deg) translateZ(150px);
-            background: rgba(255, 215, 0, 0.3);
+        .section-subtitle {
+            text-align: center;
+            color: var(--light);
+            margin-bottom: 60px;
+            font-size: 18px;
         }
 
-        @keyframes rotate {
-            from {
-                transform: rotateX(0) rotateY(0) rotateZ(0);
-            }
-            to {
-                transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
-            }
-        }
-
-        /* Статистика */
-        .stats {
+        .services-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            margin-top: 80px;
-            padding: 40px 0;
-            border-top: 2px solid rgba(255, 215, 0, 0.2);
         }
 
-        .stat-item {
+        .service-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 40px 30px;
             text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255,215,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .service-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .service-card p {
+            color: var(--light);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Секция проектов */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .project-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .project-image {
+            height: 250px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.5));
+        }
+
+        .project-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: var(--yellow);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 1;
+            font-weight: bold;
+        }
+
+        .project-info {
+            padding: 30px;
+        }
+
+        .project-info h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .project-info p {
+            color: var(--light);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .project-tech {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tech-tag {
+            padding: 5px 12px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--yellow);
+        }
+
+        /* Секция команды */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .team-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .team-card h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .team-card span {
+            color: var(--yellow);
+            font-size: 13px;
+        }
+
+        /* Секция контактов */
+        .contact-section {
+            background: rgba(255,255,255,0.02);
+            border-radius: 30px;
+            padding: 60px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .contact-info h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+        }
+
+        .contact-icon {
+            font-size: 30px;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 20px rgba(255,215,0,0.1);
+        }
+
+        .contact-form textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* Статистика */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 60px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(255,215,0,0.3);
+            transform: translateY(-5px);
         }
 
         .stat-number {
-            font-size: 48px;
+            font-size: 56px;
             font-weight: 800;
-            background: linear-gradient(45deg, #0057B7, #FFD700);
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .stat-label {
-            color: #b0b0b0;
+            color: var(--light);
+            font-size: 14px;
             margin-top: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0,0,0,0.5);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255,215,0,0.1);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--yellow);
+        }
+
+        .footer-col p {
+            color: var(--light);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--light);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover {
+            color: var(--yellow);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--light);
             font-size: 14px;
         }
 
-        /* Модальное окно */
+        .glory {
+            color: var(--yellow);
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+
+        /* Кнопка наверх */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,87,183,0.3);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+        }
+
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -348,8 +865,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
         }
@@ -362,158 +879,110 @@
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             padding: 40px;
             border-radius: 20px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            text-align: center;
-            animation: modalIn 0.3s ease;
+            border: 1px solid rgba(255,215,0,0.3);
             position: relative;
+            animation: modalIn 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Toast уведомления */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            z-index: 3000;
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+            font-weight: 600;
+        }
+
+        @keyframes toastIn {
+            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes toastOut {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(100px); opacity: 0; }
         }
 
         @keyframes modalIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #0057B7, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .modal p {
-            color: #b0b0b0;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 215, 0, 0.2);
-            transform: rotate(90deg);
-        }
-
-        /* Footer с украинской символикой */
-        .footer {
-            text-align: center;
-            padding: 40px 0;
-            border-top: 2px solid rgba(255, 215, 0, 0.2);
-            margin-top: 60px;
-        }
-
-        .footer-text {
-            color: #b0b0b0;
-            font-size: 14px;
-        }
-
-        .footer-flag {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .glory-to-ukraine {
-            color: #FFD700;
-            font-weight: bold;
-            margin-top: 10px;
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         /* Адаптивность */
+        @media (max-width: 1024px) {
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .team-grid { grid-template-columns: repeat(2, 1fr); }
+            .projects-grid { grid-template-columns: 1fr; }
+            .stats-section { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
         @media (max-width: 768px) {
-            .hero {
-                flex-direction: column;
-                text-align: center;
-            }
-            h1 {
-                font-size: 40px;
-            }
-            .buttons {
-                justify-content: center;
-            }
-            .nav-links {
-                display: none;
-            }
-            .stats {
-                grid-template-columns: 1fr;
-            }
-            .cube-container {
-                width: 200px;
-                height: 200px;
-                margin-top: 40px;
-            }
-            .face {
-                width: 200px;
-                height: 200px;
-            }
-            .front {
-                transform: translateZ(100px);
-            }
-            .back {
-                transform: rotateY(180deg) translateZ(100px);
-            }
-            .right {
-                transform: rotateY(90deg) translateZ(100px);
-            }
-            .left {
-                transform: rotateY(-90deg) translateZ(100px);
-            }
-            .top {
-                transform: rotateX(90deg) translateZ(100px);
-            }
-            .bottom {
-                transform: rotateX(-90deg) translateZ(100px);
-            }
+            .hero { flex-direction: column; text-align: center; }
+            h1 { font-size: 40px; }
+            .buttons { justify-content: center; }
+            .services-grid { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
+            .stats-section { grid-template-columns: 1fr 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .menu-toggle { display: flex; }
+            .scene { width: 250px; height: 250px; }
         }
     </style>
 </head>
 <body>
-    <!-- Анимированные частицы -->
-    <div class="particles" id="particles"></div>
+    <!-- Прелоадер -->
+    <div id="preloader">
+        <div class="loader-logo">CAPITAL IT 🇺🇦</div>
+        <div class="loader-bar">
+            <div class="loader-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- Canvas фон -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Навигация -->
+    <nav id="navbar">
+        <a href="#" class="logo">
+            <div class="logo-icon">🎮</div>
+            <span class="logo-text">CAPITAL IT</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#services">Послуги</a></li>
+            <li><a href="#projects">Проєкти</a></li>
+            <li><a href="#team">Команда</a></li>
+            <li><a href="#contact">Контакти</a></li>
+        </ul>
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="switchLang('uk')">UA</button>
+            <button class="lang-btn" onclick="switchLang('en')">EN</button>
+        </div>
+        <button class="menu-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
 
     <div class="container">
-        <!-- Навигация -->
-        <nav>
-            <div class="logo">
-                <span class="logo-flag">🇺🇦</span>
-                <span class="logo-text">CAPITAL IT</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#">Головна</a></li>
-                <li><a href="#">Ігри</a></li>
-                <li><a href="#">Про нас</a></li>
-                <li><a href="#">Контакти</a></li>
-            </ul>
-        </nav>
-
-        <!-- Hero секция -->
-        <div class="hero">
+        <!-- Hero -->
+        <section class="hero" id="home">
             <div class="hero-content">
-                <div class="badge">🚀 В розробці</div>
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    Активно наймаємо
+                </div>
                 <h1>
                     Створюємо<br>
                     <span class="gradient-text">ігри майбутнього</span><br>
@@ -526,148 +995,512 @@
                     створення захоплюючих ігрових світів.
                 </p>
                 <div class="buttons">
-                    <button class="btn btn-primary" onclick="showModal('contact')">
-                        Зв'язатися з нами
-                    </button>
-                    <button class="btn btn-outline" onclick="showModal('portfolio')">
-                        Наші проєкти
-                    </button>
-                </div>
-
-                <!-- Статистика -->
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-number">5+</div>
-                        <div class="stat-label">Ігор у розробці</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Підтримка</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">🇺🇦</div>
-                        <div class="stat-label">Made in Ukraine</div>
-                    </div>
+                    <a href="#contact" class="btn btn-primary">
+                        📧 Зв'язатися з нами
+                    </a>
+                    <a href="#projects" class="btn btn-outline">
+                        🎯 Наші проєкти
+                    </a>
                 </div>
             </div>
-
-            <!-- 3D куб -->
             <div class="hero-visual">
-                <div class="cube-container">
-                    <div class="cube">
-                        <div class="face front">🇺🇦</div>
-                        <div class="face back">🎮</div>
-                        <div class="face right">💻</div>
-                        <div class="face left">🎯</div>
-                        <div class="face top">⚡</div>
-                        <div class="face bottom">🔮</div>
+                <div class="scene">
+                    <div class="orb">
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                        <div class="center-sphere"></div>
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- Статистика -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number" data-count="12">0</div>
+                <div class="stat-label">Ігор у розробці</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-count="50">0</div>
+                <div class="stat-label">Талантів у команді</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-count="3">0</div>
+                <div class="stat-label">Роки на ринку</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-count="100">0</div>
+                <div class="stat-label">% Відданість</div>
+            </div>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <div class="footer-flag">🇺🇦</div>
-            <p class="footer-text">Capital IT © 2026. Українська компанія з розробки ігор.</p>
-            <p class="glory-to-ukraine">Слава Україні! 🇺🇦</p>
-        </div>
-    </div>
-
-    <!-- Модальное окно "Связаться" -->
-    <div class="modal" id="contactModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('contactModal')">&times;</button>
-            <h2>Зв'яжіться з нами</h2>
-            <p>Ми завжди відкриті до нових ідей та партнерства! 
-               Напишіть нам, і ми обговоримо ваш проєкт.</p>
-            <button class="btn btn-primary" onclick="alert('Email: info@capital-it.com.ua\nTelegram: @capitalit_ua\nДякуємо за інтерес! Ми скоро зв\'яжемося з вами.')">
-                📧 Написати на пошту
-            </button>
-            <p style="margin-top: 20px; color: #FFD700;">
-                info@capital-it.com.ua
-            </p>
-        </div>
-    </div>
-
-    <!-- Модальное окно "Портфолио" -->
-    <div class="modal" id="portfolioModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('portfolioModal')">&times;</button>
-            <h2>Наші проєкти</h2>
-            <p>Зараз ми активно працюємо над кількома ігровими проєктами. 
-               Слідкуйте за оновленнями — скоро ми покажемо перші результати!</p>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
-                <div style="background: rgba(0,87,183,0.2); padding: 15px; border-radius: 10px; border: 1px solid rgba(0,87,183,0.3);">
-                    🎮 <strong>Project Alpha</strong><br>
-                    <small>RPG у відкритому світі</small>
+        <!-- Услуги -->
+        <section class="section" id="services">
+            <h2 class="section-title">Наші <span class="gradient-text">послуги</span></h2>
+            <p class="section-subtitle">Повний цикл розробки ігор — від ідеї до релізу</p>
+            <div class="services-grid">
+                <div class="service-card" onclick="showToast('🎮 Розробка ігор')">
+                    <span class="service-icon">🎮</span>
+                    <h3>Розробка ігор</h3>
+                    <p>Створюємо AAA-ігри для PC, консолей та мобільних платформ з використанням Unity та Unreal Engine.</p>
                 </div>
-                <div style="background: rgba(255,215,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,215,0,0.3);">
-                    🚀 <strong>Space Quest</strong><br>
-                    <small>Космічна стратегія</small>
+                <div class="service-card" onclick="showToast('🎨 3D моделювання')">
+                    <span class="service-icon">🎨</span>
+                    <h3>3D моделювання</h3>
+                    <p>Високоякісні 3D моделі, анімація та візуальні ефекти для ваших ігрових проєктів.</p>
+                </div>
+                <div class="service-card" onclick="showToast('🔧 Оптимізація')">
+                    <span class="service-icon">🔧</span>
+                    <h3>Оптимізація</h3>
+                    <p>Оптимізація продуктивності ігор для різних платформ та пристроїв.</p>
+                </div>
+                <div class="service-card" onclick="showToast('🎵 Аудіодизайн')">
+                    <span class="service-icon">🎵</span>
+                    <h3>Аудіодизайн</h3>
+                    <p>Створення оригінальних саундтреків, звукових ефектів та повного аудіосупроводу.</p>
+                </div>
+                <div class="service-card" onclick="showToast('📱 Мобільна розробка')">
+                    <span class="service-icon">📱</span>
+                    <h3>Мобільна розробка</h3>
+                    <p>Розробка ігор для iOS та Android з використанням сучасних технологій.</p>
+                </div>
+                <div class="service-card" onclick="showToast('🌐 Мультиплеєр')">
+                    <span class="service-icon">🌐</span>
+                    <h3>Мультиплеєр</h3>
+                    <p>Розробка мережевих рішень для багатокористувацьких ігор.</p>
                 </div>
             </div>
-            <button class="btn btn-outline" onclick="closeModal('portfolioModal')">
-                Закрити
-            </button>
+        </section>
+
+        <!-- Проекты -->
+        <section class="section" id="projects">
+            <h2 class="section-title">Наші <span class="gradient-text">проєкти</span></h2>
+            <p class="section-subtitle">Гордість нашої команди</p>
+            <div class="projects-grid">
+                <div class="project-card" onclick="showProjectDetails('cosmic')">
+                    <div class="project-image">
+                        🚀
+                        <span class="project-tag">В розробці</span>
+                    </div>
+                    <div class="project-info">
+                        <h3>Cosmic Odyssey</h3>
+                        <p>Космічна RPG з відкритим світом. Досліджуйте галактики, будуйте кораблі та відкривайте нові планети.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Unreal Engine 5</span>
+                            <span class="tech-tag">C++</span>
+                            <span class="tech-tag">PC/Console</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" onclick="showProjectDetails('shadow')">
+                    <div class="project-image">
+                        🗡️
+                        <span class="project-tag">Скоро реліз</span>
+                    </div>
+                    <div class="project-info">
+                        <h3>Shadow Realm</h3>
+                        <p>Екшн-RPG у темному фентезі світі. Унікальна бойова система та глибокий сюжет.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Unity</span>
+                            <span class="tech-tag">C#</span>
+                            <span class="tech-tag">PC/Mobile</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" onclick="showProjectDetails('pixel')">
+                    <div class="project-image">
+                        🏗️
+                        <span class="project-tag">Альфа</span>
+                    </div>
+                    <div class="project-info">
+                        <h3>Pixel Kingdom</h3>
+                        <p>Стратегія в реальному часі з елементами виживання. Будуйте королівство та захищайте його.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Unity</span>
+                            <span class="tech-tag">C#</span>
+                            <span class="tech-tag">Mobile</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" onclick="showProjectDetails('neon')">
+                    <div class="project-image">
+                        🏎️
+                        <span class="project-tag">Концепт</span>
+                    </div>
+                    <div class="project-info">
+                        <h3>Neon Drift</h3>
+                        <p>Кіберпанк-гонки з неоновою атмосферою. Модифікуйте авто та змагайтесь онлайн.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Unreal Engine 5</span>
+                            <span class="tech-tag">C++</span>
+                            <span class="tech-tag">PC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Команда -->
+        <section class="section" id="team">
+            <h2 class="section-title">Наша <span class="gradient-text">команда</span></h2>
+            <p class="section-subtitle">Таланти, які створюють магію</p>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">👨‍💻</div>
+                    <h4>Олександр К.</h4>
+                    <span>CEO & Засновник</span>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">👩‍🎨</div>
+                    <h4>Марія Л.</h4>
+                    <span>Арт-директор</span>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">👨‍🔧</div>
+                    <h4>Дмитро В.</h4>
+                    <span>Lead Developer</span>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">👩‍💼</div>
+                    <h4>Анна С.</h4>
+                    <span>Project Manager</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Контакты -->
+        <section class="section" id="contact">
+            <div class="contact-section">
+                <h2 class="section-title">Зв'яжіться <span class="gradient-text">з нами</span></h2>
+                <p class="section-subtitle">Готові обговорити ваш проєкт?</p>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h3>Наші контакти</h3>
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <div>
+                                <strong>Email</strong><br>
+                                <span style="color: var(--light);">info@capital-it.com.ua</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📞</span>
+                            <div>
+                                <strong>Телефон</strong><br>
+                                <span style="color: var(--light);">+380 (44) 123-45-67</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📍</span>
+                            <div>
+                                <strong>Адреса</strong><br>
+                                <span style="color: var(--light);">Київ, Україна, вул. Хрещатик, 1</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">💬</span>
+                            <div>
+                                <strong>Telegram</strong><br>
+                                <span style="color: var(--light);">@capitalit_ua</span>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="contact-form" onsubmit="handleSubmit(event)">
+                        <input type="text" placeholder="Ваше ім'я" required>
+                        <input type="email" placeholder="Email" required>
+                        <input type="text" placeholder="Тема">
+                        <textarea placeholder="Ваше повідомлення..." required></textarea>
+                        <button type="submit" class="btn btn-primary">Відправити повідомлення ✉️</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>🎮 Capital IT</h4>
+                    <p>Українська компанія з розробки відеоігор. Ми створюємо світи, в які хочеться повертатися.</p>
+                    <p class="glory">🇺🇦 Слава Україні!</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Послуги</h4>
+                    <a href="#">Розробка ігор</a>
+                    <a href="#">3D моделювання</a>
+                    <a href="#">Оптимізація</a>
+                    <a href="#">Аудіодизайн</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Компанія</h4>
+                    <a href="#">Про нас</a>
+                    <a href="#">Команда</a>
+                    <a href="#">Кар'єра</a>
+                    <a href="#">Блог</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Соцмережі</h4>
+                    <a href="#">Twitter</a>
+                    <a href="#">LinkedIn</a>
+                    <a href="#">GitHub</a>
+                    <a href="#">Discord</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Capital IT. Всі права захищено. Made in Ukraine 🇺🇦</p>
+            </div>
         </div>
+    </footer>
+
+    <!-- Кнопка наверх -->
+    <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">⬆️</button>
+
+    <!-- Модальное окно проекта -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content" id="projectModalContent"></div>
     </div>
 
     <script>
-        // Создание частиц
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const particleCount = 30;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                const size = Math.random() * 4 + 2;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                
-                container.appendChild(particle);
+        // Прелоадер
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hide');
+            }, 800);
+        });
+
+        // Canvas фон
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedY = Math.random() * 0.5 + 0.2;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = Math.random() > 0.5 ? '0, 87, 183' : '255, 215, 0';
+            }
+            update() {
+                this.y -= this.speedY;
+                if (this.y < -10) {
+                    this.y = canvas.height + 10;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                ctx.fill();
             }
         }
 
-        // Модальные окна
-        function showModal(type) {
-            if (type === 'contact') {
-                document.getElementById('contactModal').classList.add('active');
-            } else if (type === 'portfolio') {
-                document.getElementById('portfolioModal').classList.add('active');
+        for (let i = 0; i < 80; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Навигация при скролле
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            const scrollTop = document.getElementById('scrollTop');
+            
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+                scrollTop.classList.add('visible');
+            } else {
+                nav.classList.remove('scrolled');
+                scrollTop.classList.remove('visible');
             }
+        });
+
+        // Счетчики статистики
+        function animateCounters() {
+            document.querySelectorAll('.stat-number').forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                const duration = 2000;
+                const start = performance.now();
+                
+                function update(now) {
+                    const elapsed = now - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const value = Math.floor(progress * target);
+                    counter.textContent = value + (target === 100 ? '%' : '+');
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    }
+                }
+                
+                requestAnimationFrame(update);
+            });
+        }
+
+        // Intersection Observer для счетчиков
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) observer.observe(statsSection);
+
+        // Переключение языка
+        function switchLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+            });
+            showToast(`Мову змінено на ${lang === 'uk' ? 'українську' : 'англійську'} 🇺🇦`);
+        }
+
+        // Мобильное меню
+        function toggleMenu() {
+            const links = document.querySelector('.nav-links');
+            links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+            if (links.style.display === 'flex') {
+                links.style.position = 'absolute';
+                links.style.top = '100%';
+                links.style.left = '0';
+                links.style.right = '0';
+                links.style.background = 'rgba(10,10,10,0.95)';
+                links.style.flexDirection = 'column';
+                links.style.padding = '20px';
+                links.style.gap = '15px';
+            }
+        }
+
+        // Toast уведомления
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Детали проекта
+        function showProjectDetails(project) {
+            const details = {
+                cosmic: {
+                    title: '🚀 Cosmic Odyssey',
+                    description: 'Масштабна космічна RPG з процедурною генерацією галактик. Гравець може досліджувати тисячі планет, будувати космічні кораблі та взаємодіяти з різними расами.',
+                    status: 'В активній розробці',
+                    team: '25 розробників',
+                    release: 'Q4 2026',
+                    platforms: 'PC, PlayStation 5, Xbox Series X'
+                },
+                shadow: {
+                    title: '🗡️ Shadow Realm',
+                    description: 'Похмуре фентезі з глибокою бойовою системою. Гравець виступає в ролі мисливця на демонів у світі, що занурюється в темряву.',
+                    status: 'Фінальна стадія',
+                    team: '15 розробників',
+                    release: 'Q3 2026',
+                    platforms: 'PC, Nintendo Switch, Mobile'
+                },
+                pixel: {
+                    title: '🏗️ Pixel Kingdom',
+                    description: 'Стратегія в реальному часі з елементами tower defense. Будуйте та захищайте своє королівство від хвиль ворогів.',
+                    status: 'Альфа-тестування',
+                    team: '10 розробників',
+                    release: 'Q1 2027',
+                    platforms: 'Mobile (iOS, Android)'
+                },
+                neon: {
+                    title: '🏎️ Neon Drift',
+                    description: 'Футуристичні перегони в стилі кіберпанк. Модифікуйте своє авто, змагайтесь з гравцями зі всього світу.',
+                    status: 'Концепт',
+                    team: '8 розробників',
+                    release: 'TBA',
+                    platforms: 'PC'
+                }
+            };
+
+            const d = details[project];
+            document.getElementById('projectModalContent').innerHTML = `
+                <h2 style="font-size: 32px; margin-bottom: 20px;">${d.title}</h2>
+                <p style="color: #b0b0b0; margin-bottom: 20px; line-height: 1.6;">${d.description}</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div><strong>Статус:</strong> <span style="color: #FFD700;">${d.status}</span></div>
+                    <div><strong>Команда:</strong> ${d.team}</div>
+                    <div><strong>Реліз:</strong> ${d.release}</div>
+                    <div><strong>Платформи:</strong> ${d.platforms}</div>
+                </div>
+                <button class="btn btn-outline" onclick="closeModal('projectModal')">Закрити</button>
+            `;
+            document.getElementById('projectModal').classList.add('active');
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
 
-        // Закрытие по клику вне модального окна
+        // Закрытие модального окна по клику вне
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.classList.remove('active');
             }
         }
 
-        // Инициализация
-        createParticles();
+        // Обработка формы
+        function handleSubmit(event) {
+            event.preventDefault();
+            showToast('✅ Повідомлення відправлено! Ми зв\'яжемося з вами найближчим часом.');
+            event.target.reset();
+        }
 
-        // Добавляем обработчик клавиши Escape
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                document.querySelectorAll('.modal.active').forEach(modal => {
-                    modal.classList.remove('active');
-                });
+        // Плавный скролл
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Закрытие по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
             }
         });
 
         console.log('🇺🇦 Capital IT - Українська компанія з розробки ігор');
-        console.log('Сайт успішно завантажено!');
+        console.log('🚀 Сайт успішно завантажено!');
     </script>
 </body>
 </html>
